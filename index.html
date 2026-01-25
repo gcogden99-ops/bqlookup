@@ -24,25 +24,28 @@
 <body class="bg-slate-50 text-slate-900 font-sans antialiased">
     <div id="root"></div>
 
-    <script type="text/babel">
-        // --- ICONS (Manually defined to work without imports) ---
-        const Search = ({ className }) => (
+    <!-- We add data-type="module" to prevent Babel from treating it as CommonJS -->
+    <script type="text/babel" data-type="module">
+        const { useState, useMemo, useRef, useEffect } = React;
+
+        // --- ICONS ---
+        const SearchIcon = ({ className }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         );
-        const Book = ({ className }) => (
+        const BookIcon = ({ className }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
         );
-        const ChevronRight = ({ className }) => (
+        const ChevronRightIcon = ({ className }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6"/></svg>
         );
-        const Home = ({ className }) => (
+        const HomeIcon = ({ className }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         );
-        const X = ({ className }) => (
+        const XIcon = ({ className }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 18 12"/></svg>
         );
 
-        // --- BIBLE DATA (Complete with Sections 1, 2, 3, 4A, 4B, 4C, 4D) ---
+        // --- BIBLE DATA ---
         const BIBLE_DATA = [
           {
             id: "1",
@@ -409,567 +412,578 @@
             { ref: "GALATIANS 4:6", text: "And because ye are sons, God hath sent forth the Spirit of his Son into your hearts, crying, Abba, Father."},
             { ref: "EPHESIANS 1:13-14", text: "1:13 In whom ye also trusted, after that ye heard the word of truth, the gospel of your salvation: in whom also after that ye believed, ye were sealed with that holy Spirit of promise,\n1:14 Which is the earnest of our inheritance until the redemption of the purchased possession, unto the praise of his glory."}
         ]
-      },
-      {
-        id: "4",
-        title: "CHRISTIAN LIVING",
-        subsections: [
-            {
-                id: "4A1",
-                title: "Because God is holy, we are to be holy.",
-                verses: [
-                    { ref: "LEVITICUS 11:45", text: "For I am the LORD that bringeth you up out of the land of Egypt, to be your God: ye shall therefore be holy, for I am holy."},
-                    { ref: "LEVITICUS 20:26", text: "And ye shall be holy unto me: for I the LORD am holy, and have severed you from other people, that ye should be mine."},
-                    { ref: "PSALMS 5:4", text: "For thou art not a God that hath pleasure in wickedness: neither shall evil dwell with thee."},
-                    { ref: "PSALMS 29:2", text: "Give unto the LORD the glory due unto his name; worship the LORD in the beauty of holiness."},
-                    { ref: "PSALMS 145:17", text: "The LORD is righteous in all his ways, and holy in all his works."},
-                    { ref: "ISAIAH 35:8", text: "And an highway shall be there, and a way, and it shall be called The way of holiness; the unclean shall not pass over it; but it shall be for those: the wayfaring men, though fools, shall not err therein."},
-                    { ref: "MATTHEW 5:8", text: "Blessed are the pure in heart: for they shall see God."},
-                    { ref: "2 CORINTHIANS 7:1", text: "Having therefore these promises, dearly beloved, let us cleanse ourselves from all filthiness of the flesh and spirit, perfecting holiness in the fear of God."},
-                    { ref: "EPHESIANS 4:22-24", text: "4:22 That ye put off concerning the former conversation the old man, which is corrupt according to the deceitful lusts;\n4:23 And be renewed in the spirit of your mind;\n4:24 And that ye put on the new man, which after God is created in righteousness and true holiness."},
-                    { ref: "EPHESIANS 5:27", text: "That he might present it to himself a glorious church, not having spot, or wrinkle, or any such thing; but that it should be holy and without blemish."},
-                    { ref: "1 THESSALONIANS 3:12-13", text: "3:12 And the Lord make you to increase and abound in love one toward another, and toward all men, even as we do toward you:\n3:13 To the end he may stablish your hearts unblameable in holiness before God, even our Father, at the coming of our Lord Jesus Christ with all his saints."},
-                    { ref: "HEBREWS 12:14-15", text: "12:14 Follow peace with all men, and holiness, without which no man shall see the Lord:\n12:15 Looking diligently lest any man fail of the grace of God; lest any root of bitterness springing up trouble you, and thereby many be defiled;"},
-                    { ref: "1 PETER 2:9", text: "But ye are a chosen generation, a royal priesthood, an holy nation, a peculiar people; that ye should shew forth the praises of him who hath called you out of darkness into his marvellous light;"},
-                    { ref: "1 JOHN 1:5", text: "This then is the message which we have heard of him, and declare unto you, that God is light, and in him is no darkness at all."},
-                    { ref: "REVELATION 21:27", text: "And there shall in no wise enter into it any thing that defileth, neither whatsoever worketh abomination, or maketh a lie: but they which are written in the Lamb's book of life."}
-                ]
-            },
-            {
-                id: "4A2",
-                title: "We are separated for God and from the world.",
-                verses: [
-                    { ref: "EXODUS 23:2", text: "Thou shalt not follow a multitude to do evil; neither shalt thou speak in a cause to decline after many to wrest judgment:"},
-                    { ref: "DEUTERONOMY 12:30", text: "Take heed to thyself that thou be not snared by following them, after that they be destroyed from before thee; and that thou enquire not after their gods, saying, How did these nations serve their gods? even so will I do likewise."},
-                    { ref: "PSALMS 19:14", text: "Let the words of my mouth, and the meditation of my heart, be acceptable in thy sight, O LORD, my strength, and my redeemer."},
-                    { ref: "PSALMS 101:3", text: "I will set no wicked thing before mine eyes: I hate the work of them that turn aside; it shall not cleave to me."},
-                    { ref: "PROVERBS 1:10", text: "My son, if sinners entice thee, consent thou not."},
-                    { ref: "PROVERBS 24:1", text: "Be not thou envious against evil men, neither desire to be with them."},
-                    { ref: "ACTS 2:40", text: "And with many other words did he testify and exhort, saying, Save yourselves from this untoward generation."},
-                    { ref: "ROMANS 12:1-2", text: "12:1 I beseech you therefore, brethren, by the mercies of God, that ye present your bodies a living sacrifice, holy, acceptable unto God, which is your reasonable service.\n12:2 And be not conformed to this world: but be ye transformed by the renewing of your mind, that ye may prove what is that good, and acceptable, and perfect, will of God."},
-                    { ref: "1 CORINTHIANS 3:16-17", text: "3:16 Know ye not that ye are the temple of God, and that the Spirit of God dwelleth in you?\n3:17 If any man defile the temple of God, him shall God destroy; for the temple of God is holy, which temple ye are."},
-                    { ref: "1 CORINTHIANS 6:9-11", text: "6:9 Know ye not that the unrighteous shall not inherit the kingdom of God? Be not deceived: neither fornicators, nor idolaters, nor adulterers, nor effeminate, nor abusers of themselves with mankind,\n6:10 Nor thieves, nor covetous, nor drunkards, nor revilers, nor extortioners, shall inherit the kingdom of God.\n6:11 And such were some of you: but ye are washed, but ye are sanctified, but ye are justified in the name of the Lord Jesus, and by the Spirit of our God."},
-                    { ref: "1 CORINTHIANS 6:15-20", text: "6:15 Know ye not that your bodies are the members of Christ? shall I then take the members of Christ, and make them the members of an harlot? God forbid.\n6:16 What? know ye not that he which is joined to an harlot is one body? for two, saith he, shall be one flesh.\n6:17 But he that is joined unto the Lord is one spirit.\n6:18 Flee fornication. Every sin that a man doeth is without the body; but he that committeth fornication sinneth against his own body.\n6:19 What? know ye not that your body is the temple of the Holy Ghost which is in you, which ye have of God, and ye are not your own?\n6:20 For ye are bought with a price: therefore glorify God in your body, and in your spirit, which are God's."},
-                    { ref: "1 CORINTHIANS 15:33", text: "Be not deceived: evil communications corrupt good manners."},
-                    { ref: "2 CORINTHIANS 6:14-17", text: "6:14 Be ye not unequally yoked together with unbelievers: for what fellowship hath righteousness with unrighteousness? and what communion hath light with darkness?\n6:15 And what concord hath Christ with Belial? or what part hath he that believeth with an infidel?\n6:16 And what agreement hath the temple of God with idols? for ye are the temple of the living God; as God hath said, I will dwell in them, and walk in them; and I will be their God, and they shall be my people.\n6:17 Wherefore come out from among them, and be ye separate, saith the Lord, and touch not the unclean thing; and I will receive you."},
-                    { ref: "EPHESIANS 4:29-32", text: "4:29 Let no corrupt communication proceed out of your mouth, but that which is good to the use of edifying, that it may minister grace unto the hearers.\n4:30 And grieve not the holy Spirit of God, whereby ye are sealed unto the day of redemption.\n4:31 Let all bitterness, and wrath, and anger, and clamour, and evil speaking, be put away from you, with all malice:\n4:32 And be ye kind one to another, tenderhearted, forgiving one another, even as God for Christ's sake hath forgiven you."},
-                    { ref: "EPHESIANS 5:11", text: "And have no fellowship with the unfruitful works of darkness, but rather reprove them."},
-                    { ref: "COLOSSIANS 3:2", text: "Set your affection on things above, not on things on the earth."},
-                    { ref: "COLOSSIANS 3:8", text: "But now ye also put off all these; anger, wrath, malice, blasphemy, filthy communication out of your mouth."},
-                    { ref: "2 TIMOTHY 2:4", text: "No man that warreth entangleth himself with the affairs of this life; that he may please him who hath chosen him to be a soldier."},
-                    { ref: "TITUS 2:11-12", text: "2:11 For the grace of God that bringeth salvation hath appeared to all men,\n2:12 Teaching us that, denying ungodliness and worldly lusts, we should live soberly, righteously, and godly, in this present world;"},
-                    { ref: "HEBREWS 11:24-25", text: "11:24 By faith Moses, when he was come to years, refused to be called the son of Pharaoh's daughter;\n11:25 Choosing rather to suffer affliction with the people of God, than to enjoy the pleasures of sin for a season;"},
-                    { ref: "JAMES 4:4", text: "Ye adulterers and adulteresses, know ye not that the friendship of the world is enmity with God? whosoever therefore will be a friend of the world is the enemy of God."},
-                    { ref: "1 JOHN 2:15", text: "Love not the world, neither the things that are in the world. If any man love the world, the love of the Father is not in him."},
-                    { ref: "REVELATION 21:8", text: "But the fearful, and unbelieving, and the abominable, and murderers, and whoremongers, and sorcerers, and idolaters, and all liars, shall have their part in the lake which burneth with fire and brimstone: which is the second death."}
-                ]
-            },
-            {
-                id: "4B1",
-                title: "The fruit of the Spirit is evident in the Spirit-filled life.",
-                verses: [
-                    { ref: "1 CORINTHIANS 13:4-8", text: "13:4 Charity suffereth long, and is kind; charity envieth not; charity vaunteth not itself, is not puffed up,\n13:5 Doth not behave itself unseemly, seeketh not her own, is not easily provoked, thinketh no evil;\n13:6 Rejoiceth not in iniquity, but rejoiceth in the truth;\n13:7 Beareth all things, believeth all things, hopeth all things, endureth all things.\n13:8 Charity never faileth: but whether there be prophecies, they shall fail; whether there be tongues, they shall cease; whether there be knowledge, it shall vanish away."},
-                    { ref: "GALATIANS 5:22-23", text: "5:22 But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith,\n5:23 Meekness, temperance: against such there is no law."},
-                    { ref: "EPHESIANS 5:8-10", text: "5:8 For ye were sometimes darkness, but now are ye light in the Lord: walk as children of light:\n5:9 (For the fruit of the Spirit is in all goodness and righteousness and truth;)\n5:10 Proving what is acceptable unto the Lord."},
-                    { ref: "PHILIPPIANS 1:9-11", text: "1:9 And this I pray, that your love may abound yet more and more in knowledge and in all judgment;\n1:10 That ye may approve things that are excellent; that ye may be sincere and without offence till the day of Christ;\n1:11 Being filled with the fruits of righteousness, which are by Jesus Christ, unto the glory and praise of God."}
-                ]
-            },
-            {
-                id: "4B2",
-                title: "Christian character and attitudes are to be developed.",
-                verses: [
-                    { ref: "1 CORINTHIANS 13:11", text: "When I was a child, I spake as a child, I understood as a child, I thought as a child: but when I became a man, I put away childish things."},
-                    { ref: "EPHESIANS 4:11-16", text: "4:11 And he gave some, apostles; and some, prophets; and some, evangelists; and some, pastors and teachers;\n4:12 For the perfecting of the saints, for the work of the ministry, for the edifying of the body of Christ:\n4:13 Till we all come in the unity of the faith, and of the knowledge of the Son of God, unto a perfect man, unto the measure of the stature of the fulness of Christ:\n4:14 That we henceforth be no more children, tossed to and fro, and carried about with every wind of doctrine, by the sleight of men, and cunning craftiness, whereby they lie in wait to deceive;\n4:15 But speaking the truth in love, may grow up into him in all things, which is the head, even Christ:\n4:16 From whom the whole body fitly joined together and compacted by that which every joint supplieth, according to the effectual working in the measure of every part, maketh increase of the body unto the edifying of itself in love."},
-                    { ref: "1 PETER 2:1-3", text: "2:1 Wherefore laying aside all malice, and all guile, and hypocrisies, and envies, and all evil speakings,\n2:2 As newborn babes, desire the sincere milk of the word, that ye may grow thereby:\n2:3 If so be ye have tasted that the Lord is gracious."},
-                    { ref: "2 PETER 1:4-9", text: "1:4 Whereby are given unto us exceeding great and precious promises: that by these ye might be partakers of the divine nature, having escaped the corruption that is in the world through lust.\n1:5 And beside this, giving all diligence, add to your faith virtue; and to virtue knowledge;\n1:6 And to knowledge temperance; and to temperance patience; and to patience godliness;\n1:7 And to godliness brotherly kindness; and to brotherly kindness charity.\n1:8 For if these things be in you, and abound, they make you that ye shall neither be barren nor unfruitful in the knowledge of our Lord Jesus Christ.\n1:9 But he that lacketh these things is blind, and cannot see afar off, and hath forgotten that he was purged from his old sins."},
-                    { ref: "2 PETER 3:18", text: "But grow in grace, and in the knowledge of our Lord and Saviour Jesus Christ. To him be glory both now and for ever. Amen."}
-                ]
-            },
-            {
-                id: "4B3",
-                title: "The gifts of the Spirit are to be used by individuals in the church.",
-                verses: [
-                    { ref: "1 CORINTHIANS 12:4-11", text: "12:4 Now there are diversities of gifts, but the same Spirit.\n12:5 And there are differences of administrations, but the same Lord.\n12:6 And there are diversities of operations, but it is the same God which worketh all in all.\n12:7 But the manifestation of the Spirit is given to every man to profit withal.\n12:8 For to one is given by the Spirit the word of wisdom; to another the word of knowledge by the same Spirit;\n12:9 To another faith by the same Spirit; to another the gifts of healing by the same Spirit;\n12:10 To another the working of miracles; to another prophecy; to another discerning of spirits; to another divers kinds of tongues;\n12:11 But all these worketh that one and the selfsame Spirit, dividing to every man severally as he will."},
-                    { ref: "1 CORINTHIANS 14:1-5", text: "14:1 Follow after charity, and desire spiritual gifts, but rather that ye may prophesy.\n14:2 For he that speaketh in an unknown tongue speaketh not unto men, but unto God: for no man understandeth him; howbeit in the spirit he speaketh mysteries.\n14:3 But he that prophesieth speaketh unto men to edification, and exhortation, and comfort.\n14:4 He that speaketh in an unknown tongue edifieth himself; but he that prophesieth edifieth the church.\n14:5 I would that ye all spake with tongues but rather that ye prophesied: for greater is he that prophesieth than he that speaketh with tongues, except he interpret, that the church may receive edifying."},
-                    { ref: "1 CORINTHIANS 14:26-28", text: "14:26 How is it then, brethren? when ye come together, every one of you hath a psalm, hath a doctrine, hath a tongue, hath a revelation, hath an interpretation. Let all things be done unto edifying.\n14:27 If any man speak in an unknown tongue, let it be by two, or at the most by three, and that by course; and let one interpret.\n14:28 But if there be no interpreter, let him keep silence in the church; and let him speak to himself, and to God."},
-                    { ref: "1 CORINTHIANS 14:33", text: "For God is not the author of confusion, but of peace, as in all churches of the saints."},
-                    { ref: "1 CORINTHIANS 14:39-40", text: "14:39 Wherefore, brethren, covet to prophesy, and forbid not to speak with tongues.\n14:40 Let all things be done decently and in order."}
-                ]
-            },
-            {
-                id: "4C1",
-                title: "We are commanded to worship and praise the Lord.",
-                verses: [
-                    { ref: "1 CHRONICLES 15:28", text: "Thus all Israel brought up the ark of the covenant of the LORD with shouting, and with sound of the cornet, and with trumpets, and with cymbals, making a noise with psalteries and harps."},
-                    { ref: "1 CHRONICLES 16:29", text: "Give unto the LORD the glory due unto his name: bring an offering, and come before him: worship the LORD in the beauty of holiness."},
-                    { ref: "PSALMS 9:11", text: "Sing praises to the LORD, which dwelleth in Zion: declare among the people his doings."},
-                    { ref: "PSALMS 22:3", text: "But thou art holy, O thou that inhabitest the praises of Israel."},
-                    { ref: "PSALMS 33:2", text: "Praise the LORD with harp: sing unto him with the psaltery and an instrument of ten strings."},
-                    { ref: "PSALMS 47:1", text: "O clap your hands, all ye people; shout unto God with the voice of triumph."},
-                    { ref: "PSALMS 95:1-2", text: "95:1 O come, let us sing unto the LORD: let us make a joyful noise to the rock of our salvation.\n95:2 Let us come before his presence with thanksgiving, and make a joyful noise unto him with psalms."},
-                    { ref: "PSALMS 95:6", text: "O come, let us worship and bow down: let us kneel before the LORD our maker."},
-                    { ref: "PSALMS 100:4", text: "Enter into his gates with thanksgiving, and into his courts with praise: be thankful unto him, and bless his name."},
-                    { ref: "PSALMS 150:1-6", text: "150:1 Praise ye the LORD. Praise God in his sanctuary: praise him in the firmament of his power.\n150:2 Praise him for his mighty acts: praise him according to his excellent greatness.\n150:3 Praise him with the sound of the trumpet: praise him with the psaltery and harp.\n150:4 Praise him with the timbrel and dance: praise him with stringed instruments and organs.\n150:5 Praise him upon the loud cymbals: praise him upon the high sounding cymbals.\n150:6 Let every thing that hath breath praise the LORD. Praise ye the LORD."},
-                    { ref: "JOHN 4:23-24", text: "4:23 But the hour cometh, and now is, when the true worshippers shall worship the Father in spirit and in truth: for the Father seeketh such to worship him.\n4:24 God is a Spirit: and they that worship him must worship him in spirit and in truth."},
-                    { ref: "EPHESIANS 5:18-19", text: "5:18 And be not drunk with wine, wherein is excess; but be filled with the Spirit;\n5:19 Speaking to yourselves in psalms and hymns and spiritual songs, singing and making melody in your heart to the Lord;"},
-                    { ref: "PHILIPPIANS 2:9-11", text: "2:9 Wherefore God also hath highly exalted him, and given him a name which is above every name:\n2:10 That at the name of Jesus every knee should bow, of things in heaven, and things in earth, and things under the earth;\n2:11 And that every tongue should confess that Jesus Christ is Lord, to the glory of God the Father."},
-                    { ref: "HEBREWS 13:15", text: "By him therefore let us offer the sacrifice of praise to God continually, that is, the fruit of our lips giving thanks to his name."},
-                    { ref: "1 PETER 2:9", text: "But ye are a chosen generation, a royal priesthood, an holy nation, a peculiar people; that ye should shew forth the praises of him who hath called you out of darkness into his marvellous light;"}
-                ]
-            },
-            {
-                id: "4C2",
-                title: "Prayer is a daily essential of our walk with God.",
-                verses: [
-                    { ref: "1 CHRONICLES 16:11", text: "Seek the LORD and his strength, seek his face continually."},
-                    { ref: "PSALMS 91:15", text: "He shall call upon me, and I will answer him: I will be with him in trouble; I will deliver him, and honour him"},
-                    { ref: "ISAIAH 56:7", text: "Even them will I bring to my holy mountain, and make them joyful in my house of prayer: their burnt offerings and their sacrifices shall be accepted upon mine altar; for mine house shall be called an house of prayer for all people."},
-                    { ref: "JEREMIAH 29:13", text: "And ye shall seek me, and find me, when ye shall search for me with all your heart."},
-                    { ref: "MATTHEW 6:5-13", text: "6:5 And when thou prayest, thou shalt not be as the hypocrites are: for they love to pray standing in the synagogues and in the corners of the streets, that they may be seen of men. Verily I say unto you, They have their reward.\n6:6 But thou, when thou prayest, enter into thy closet, and when thou hast shut thy door, pray to thy Father which is in secret; and thy Father which seeth in secret shall reward thee openly.\n6:7 But when ye pray, use not vain repetitions, as the heathen do: for they think that they shall be heard for their much speaking.\n6:8 Be not ye therefore like unto them: for your Father knoweth what things ye have need of, before ye ask him.\n6:9 After this manner therefore pray ye: Our Father which art in heaven, Hallowed be thy name.\n6:10 Thy kingdom come, Thy will be done in earth, as it is in heaven.\n6:11 Give us this day our daily bread.\n6:12 And forgive us our debts, as we forgive our debtors.\n6:13 And lead us not into temptation, but deliver us from evil: For thine is the kingdom, and the power, and the glory, for ever. Amen."},
-                    { ref: "MATTHEW 7:7-11", text: "7:7 Ask, and it shall be given you; seek, and ye shall find; knock, and it shall be opened unto you:\n7:8 For every one that asketh receiveth; and he that seeketh findeth; and to him that knocketh it shall be opened.\n7:9 Or what man is there of you, whom if his son ask bread, will he give him a stone?\n7:10 Or if he ask a fish, will he give him a serpent?\n7:11 If ye then, being evil, know how to give good gifts unto your children, how much more shall your heavenly Father which is in heaven give good things to them that ask him?"},
-                    { ref: "MATTHEW 18:19", text: "Again I say unto you, That if two of you shall agree on earth as touching any thing that they shall ask, it shall be done for them of my Father which is in heaven."},
-                    { ref: "MATTHEW 26:41", text: "Watch and pray, that ye enter not into temptation: the spirit indeed is willing, but the flesh is weak."},
-                    { ref: "LUKE 18:1", text: "And he spake a parable unto them to this end, that men ought always to pray, and not to faint;"},
-                    { ref: "JOHN 16:24", text: "Hitherto have ye asked nothing in my name: ask, and ye shall receive, that your joy may be full."},
-                    { ref: "EPHESIANS 6:18", text: "Praying always with all prayer and supplication in the Spirit, and watching thereunto with all perseverance and supplication for all saints;"},
-                    { ref: "PHILIPPIANS 4:6", text: "Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God."},
-                    { ref: "1 THESSALONIANS 5:17", text: "Pray without ceasing."},
-                    { ref: "1 TIMOTHY 2:8", text: "I will therefore that men pray every where, lifting up holy hands, without wrath and doubting."},
-                    { ref: "JAMES 5:13-18", text: "5:13 Is any among you afflicted? let him pray. Is any merry? let him sing psalms.\n5:14 Is any sick among you? let him call for the elders of the church; and let them pray over him, anointing him with oil in the name of the Lord:\n5:15 And the prayer of faith shall save the sick, and the Lord shall raise him up; and if he have committed sins, they shall be forgiven him.\n5:16 Confess your faults one to another, and pray one for another, that ye may be healed. The effectual fervent prayer of a righteous man availeth much.\n5:17 Elias was a man subject to like passions as we are, and he prayed earnestly that it might not rain: and it rained not on the earth by the space of three years and six months.\n5:18 And he prayed again, and the heaven gave rain, and the earth brought forth her fruit."}
-                ]
-            },
-            {
-                id: "4C3",
-                title: "Fasting is an important practice in our Christian life.",
-                verses: [
-                    { ref: "JOEL 1:14", text: "Sanctify ye a fast, call a solemn assembly, gather the elders and all the inhabitants of the land into the house of the LORD your God, and cry unto the LORD,"},
-                    { ref: "MATTHEW 6:16-18", text: "6:16 Moreover when ye fast, be not, as the hypocrites, of a sad countenance: for they disfigure their faces, that they may appear unto men to fast. Verily I say unto you, They have their reward.\n6:17 But thou, when thou fastest, anoint thine head, and wash thy face;\n6:18 That thou appear not unto men to fast, but unto thy Father which is in secret: and thy Father, which seeth in secret, shall reward thee openly."},
-                    { ref: "MATTHEW 17:21", text: "Howbeit this kind goeth not out but by prayer and fasting."},
-                    { ref: "ACTS 13:2", text: "As they ministered to the Lord, and fasted, the Holy Ghost said, Separate me Barnabas and Saul for the work whereunto I have called them."},
-                    { ref: "ACTS 14:23", text: "And when they had ordained them elders in every church, and had prayed with fasting, they commended them to the Lord, on whom they believed."}
-                ]
-            },
-            {
-                id: "4C4",
-                title: "Our apparel and adornment should glorify God and reflect Christ in us.",
-                verses: [
-                    { ref: "DEUTERONOMY 22:5", text: "The woman shall not wear that which pertaineth unto a man, neither shall a man put on a woman's garment: for all that do so are abomination unto the LORD thy God."},
-                    { ref: "1 CORINTHIANS 11:3-10", text: "11:3 But I would have you know, that the head of every man is Christ; and the head of the woman is the man; and the head of Christ is God.\n11:4 Every man praying or prophesying, having his head covered, dishonoureth his head.\n11:5 But every woman that prayeth or prophesieth with her head uncovered dishonoureth her head: for that is even all one as if she were shaven.\n11:6 For if the woman be not covered, let her also be shorn: but if it be a shame for a woman to be shorn or shaven, let her be covered.\n11:7 For a man indeed ought not to cover his head, forasmuch as he is the image and glory of God: but the woman is the glory of the man.\n11:8 For the man is not of the woman: but the woman of the man.\n11:9 Neither was the man created for the woman; but the woman for the man.\n11:10 For this cause ought the woman to have power on her head because of the angels."},
-                    { ref: "1 CORINTHIANS 11:13-16", text: "11:13 Judge in yourselves: is it comely that a woman pray unto God uncovered?\n11:14 Doth not even nature itself teach you, that, if a man have long hair, it is a shame unto him?\n11:15 But if a woman have long hair, it is a glory to her: for her hair is given her for a covering.\n11:16 But if any man seem to be contentious, we have no such custom, neither the churches of God."},
-                    { ref: "1 TIMOTHY 2:8-10", text: "2:8 I will therefore that men pray every where, lifting up holy hands, without wrath and doubting.\n2:9 In like manner also, that women adorn themselves in modest apparel, with shamefacedness and sobriety; not with broided hair, or gold, or pearls, or costly array;\n2:10 But (which becometh women professing godliness) with good works."},
-                    { ref: "1 PETER 3:3-4", text: "3:3 Whose adorning let it not be that outward adorning of plaiting the hair, and of wearing of gold, or of putting on of apparel;\n3:4 But let it be the hidden man of the heart, in that which is not corruptible, even the ornament of a meek and quiet spirit, which is in the sight of God of great price."}
-                ]
-            },
-            {
-                id: "4D1",
-                title: "Regular church attendance is necessary and spiritually enriching.",
-                verses: [
-                    { ref: "PSALMS 23:6", text: "Surely goodness and mercy shall follow me all the days of my life: and I will dwell in the house of the LORD for ever."},
-                    { ref: "PSALMS 27:4", text: "One thing have I desired of the LORD, that will I seek after; that I may dwell in the house of the LORD all the days of my life, to behold the beauty of the LORD, and to enquire in his temple."},
-                    { ref: "PSALMS 84:4", text: "Blessed are they that dwell in thy house: they will be still praising thee. Selah."},
-                    { ref: "PSALMS 84:10", text: "For a day in thy courts is better than a thousand. I had rather be a doorkeeper in the house of my God, than to dwell in the tents of wickedness."},
-                    { ref: "PSALMS 122:1", text: "I was glad when they said unto me, Let us go into the house of the LORD."},
-                    { ref: "LUKE 4:16", text: "And he came to Nazareth, where he had been brought up: and, as his custom was, he went into the synagogue on the sabbath day, and stood up for to read."},
-                    { ref: "1 CORINTHIANS 4:2", text: "Moreover it is required in stewards, that a man be found faithful."},
-                    { ref: "HEBREWS 10:24-25", text: "10:24 And let us consider one another to provoke unto love and to good works:\n10:25 Not forsaking the assembling of ourselves together, as the manner of some is; but exhorting one another: and so much the more, as ye see the day approaching."}
-                ]
-            },
-            {
-                id: "4D2",
-                title: "Honor and submission are to be given to God-ordained authority.",
-                verses: [
-                    { ref: "1 CORINTHIANS 9:9", text: "For it is written in the law of Moses, Thou shalt not muzzle the mouth of the ox that treadeth out the corn. Doth God take care for oxen?"},
-                    { ref: "1 CORINTHIANS 9:13-14", text: "9:13 Do ye not know that they which minister about holy things live of the things of the temple? and they which wait at the altar are partakers with the altar?\n9:14 Even so hath the Lord ordained that they which preach the gospel should live of the gospel."},
-                    { ref: "1 CORINTHIANS 12:28", text: "And God hath set some in the church, first apostles, secondarily prophets, thirdly teachers, after that miracles, then gifts of healings, helps, governments, diversities of tongues."},
-                    { ref: "EPHESIANS 2:19-22", text: "2:19 Now therefore ye are no more strangers and foreigners, but fellowcitizens with the saints, and of the household of God;\n2:20 And are built upon the foundation of the apostles and prophets, Jesus Christ himself being the chief corner stone;\n2:21 In whom all the building fitly framed together groweth unto an holy temple in the Lord:\n2:22 In whom ye also are builded together for an habitation of God through the Spirit."},
-                    { ref: "EPHESIANS 5:21", text: "Submitting yourselves one to another in the fear of God."},
-                    { ref: "1 THESSALONIANS 5:12-13", text: "5:12 And we beseech you, brethren, to know them which labour among you, and are over you in the Lord, and admonish you;\n5:13 And to esteem them very highly in love for their work's sake. And be at peace among yourselves."},
-                    { ref: "1 TIMOTHY 5:17", text: "Let the elders that rule well be counted worthy of double honour, especially they who labour in the word and doctrine."},
-                    { ref: "HEBREWS 13:7", text: "Remember them which have the rule over you, who have spoken unto you the word of God: whose faith follow, considering the end of their conversation."},
-                    { ref: "HEBREWS 13:17", text: "Obey them that have the rule over you, and submit yourselves: for they watch for your souls, as they that must give account, that they may do it with joy, and not with grief: for that is unprofitable for you."}
-                ]
-            },
-            {
-                id: "4D3",
-                title: "Sharing God's goodness in our own lives will lead others closer to the Lord.",
-                verses: [
-                    { ref: "EXODUS 4:12", text: "Now therefore go, and I will be with thy mouth, and teach thee what thou shalt say."},
-                    { ref: "PSALMS 66:16", text: "Come and hear, all ye that fear God, and I will declare what he hath done for my soul."},
-                    { ref: "JEREMIAH 20:9", text: "Then I said, I will not make mention of him, nor speak any more in his name. But his word was in mine heart as a burning fire shut up in my bones, and I was weary with forbearing, and I could not stay."},
-                    { ref: "LUKE 12:12", text: "For the Holy Ghost shall teach you in the same hour what ye ought to say."},
-                    { ref: "JOHN 13:35", text: "By this shall all men know that ye are my disciples, if ye have love one to another."},
-                    { ref: "ACTS 1:8", text: "But ye shall receive power, after that the Holy Ghost is come upon you: and ye shall be witnesses unto me both in Jerusalem, and in all Judaea, and in Samaria, and unto the uttermost part of the earth."},
-                    { ref: "ACTS 4:20", text: "For we cannot but speak the things which we have seen and heard."},
-                    { ref: "1 CORINTHIANS 2:13", text: "Which things also we speak, not in the words which man's wisdom teacheth, but which the Holy Ghost teacheth; comparing spiritual things with spiritual."},
-                    { ref: "2 TIMOTHY 1:8", text: "Be not thou therefore ashamed of the testimony of our Lord, nor of me his prisoner: but be thou partaker of the afflictions of the gospel according to the power of God;"},
-                    { ref: "1 PETER 3:15", text: "But sanctify the Lord God in your hearts: and be ready always to give an answer to every man that asketh you a reason of the hope that is in you with meekness and fear:"}
-                ]
-            }
-        ]
-    }
+      }
+    ]
+  },
+  {
+    id: "4",
+    title: "CHRISTIAN LIVING",
+    subsections: [
+        {
+            id: "4A1",
+            title: "Because God is holy, we are to be holy.",
+            verses: [
+                { ref: "LEVITICUS 11:45", text: "For I am the LORD that bringeth you up out of the land of Egypt, to be your God: ye shall therefore be holy, for I am holy."},
+                { ref: "LEVITICUS 20:26", text: "And ye shall be holy unto me: for I the LORD am holy, and have severed you from other people, that ye should be mine."},
+                { ref: "PSALMS 5:4", text: "For thou art not a God that hath pleasure in wickedness: neither shall evil dwell with thee."},
+                { ref: "PSALMS 29:2", text: "Give unto the LORD the glory due unto his name; worship the LORD in the beauty of holiness."},
+                { ref: "PSALMS 145:17", text: "The LORD is righteous in all his ways, and holy in all his works."},
+                { ref: "ISAIAH 35:8", text: "And an highway shall be there, and a way, and it shall be called The way of holiness; the unclean shall not pass over it; but it shall be for those: the wayfaring men, though fools, shall not err therein."},
+                { ref: "MATTHEW 5:8", text: "Blessed are the pure in heart: for they shall see God."},
+                { ref: "2 CORINTHIANS 7:1", text: "Having therefore these promises, dearly beloved, let us cleanse ourselves from all filthiness of the flesh and spirit, perfecting holiness in the fear of God."},
+                { ref: "EPHESIANS 4:22-24", text: "4:22 That ye put off concerning the former conversation the old man, which is corrupt according to the deceitful lusts;\n4:23 And be renewed in the spirit of your mind;\n4:24 And that ye put on the new man, which after God is created in righteousness and true holiness."},
+                { ref: "EPHESIANS 5:27", text: "That he might present it to himself a glorious church, not having spot, or wrinkle, or any such thing; but that it should be holy and without blemish."},
+                { ref: "1 THESSALONIANS 3:12-13", text: "3:12 And the Lord make you to increase and abound in love one toward another, and toward all men, even as we do toward you:\n3:13 To the end he may stablish your hearts unblameable in holiness before God, even our Father, at the coming of our Lord Jesus Christ with all his saints."},
+                { ref: "HEBREWS 12:14-15", text: "12:14 Follow peace with all men, and holiness, without which no man shall see the Lord:\n12:15 Looking diligently lest any man fail of the grace of God; lest any root of bitterness springing up trouble you, and thereby many be defiled;"},
+                { ref: "1 PETER 2:9", text: "But ye are a chosen generation, a royal priesthood, an holy nation, a peculiar people; that ye should shew forth the praises of him who hath called you out of darkness into his marvellous light;"},
+                { ref: "1 JOHN 1:5", text: "This then is the message which we have heard of him, and declare unto you, that God is light, and in him is no darkness at all."},
+                { ref: "REVELATION 21:27", text: "And there shall in no wise enter into it any thing that defileth, neither whatsoever worketh abomination, or maketh a lie: but they which are written in the Lamb's book of life."}
+            ]
+        },
+        {
+            id: "4A2",
+            title: "We are separated for God and from the world.",
+            verses: [
+                { ref: "EXODUS 23:2", text: "Thou shalt not follow a multitude to do evil; neither shalt thou speak in a cause to decline after many to wrest judgment:"},
+                { ref: "DEUTERONOMY 12:30", text: "Take heed to thyself that thou be not snared by following them, after that they be destroyed from before thee; and that thou enquire not after their gods, saying, How did these nations serve their gods? even so will I do likewise."},
+                { ref: "PSALMS 19:14", text: "Let the words of my mouth, and the meditation of my heart, be acceptable in thy sight, O LORD, my strength, and my redeemer."},
+                { ref: "PSALMS 101:3", text: "I will set no wicked thing before mine eyes: I hate the work of them that turn aside; it shall not cleave to me."},
+                { ref: "PROVERBS 1:10", text: "My son, if sinners entice thee, consent thou not."},
+                { ref: "PROVERBS 24:1", text: "Be not thou envious against evil men, neither desire to be with them."},
+                { ref: "ACTS 2:40", text: "And with many other words did he testify and exhort, saying, Save yourselves from this untoward generation."},
+                { ref: "ROMANS 12:1-2", text: "12:1 I beseech you therefore, brethren, by the mercies of God, that ye present your bodies a living sacrifice, holy, acceptable unto God, which is your reasonable service.\n12:2 And be not conformed to this world: but be ye transformed by the renewing of your mind, that ye may prove what is that good, and acceptable, and perfect, will of God."},
+                { ref: "1 CORINTHIANS 3:16-17", text: "3:16 Know ye not that ye are the temple of God, and that the Spirit of God dwelleth in you?\n3:17 If any man defile the temple of God, him shall God destroy; for the temple of God is holy, which temple ye are."},
+                { ref: "1 CORINTHIANS 6:9-11", text: "6:9 Know ye not that the unrighteous shall not inherit the kingdom of God? Be not deceived: neither fornicators, nor idolaters, nor adulterers, nor effeminate, nor abusers of themselves with mankind,\n6:10 Nor thieves, nor covetous, nor drunkards, nor revilers, nor extortioners, shall inherit the kingdom of God.\n6:11 And such were some of you: but ye are washed, but ye are sanctified, but ye are justified in the name of the Lord Jesus, and by the Spirit of our God."},
+                { ref: "1 CORINTHIANS 6:15-20", text: "6:15 Know ye not that your bodies are the members of Christ? shall I then take the members of Christ, and make them the members of an harlot? God forbid.\n6:16 What? know ye not that he which is joined to an harlot is one body? for two, saith he, shall be one flesh.\n6:17 But he that is joined unto the Lord is one spirit.\n6:18 Flee fornication. Every sin that a man doeth is without the body; but he that committeth fornication sinneth against his own body.\n6:19 What? know ye not that your body is the temple of the Holy Ghost which is in you, which ye have of God, and ye are not your own?\n6:20 For ye are bought with a price: therefore glorify God in your body, and in your spirit, which are God's."},
+                { ref: "1 CORINTHIANS 15:33", text: "Be not deceived: evil communications corrupt good manners."},
+                { ref: "2 CORINTHIANS 6:14-17", text: "6:14 Be ye not unequally yoked together with unbelievers: for what fellowship hath righteousness with unrighteousness? and what communion hath light with darkness?\n6:15 And what concord hath Christ with Belial? or what part hath he that believeth with an infidel?\n6:16 And what agreement hath the temple of God with idols? for ye are the temple of the living God; as God hath said, I will dwell in them, and walk in them; and I will be their God, and they shall be my people.\n6:17 Wherefore come out from among them, and be ye separate, saith the Lord, and touch not the unclean thing; and I will receive you."},
+                { ref: "EPHESIANS 4:29-32", text: "4:29 Let no corrupt communication proceed out of your mouth, but that which is good to the use of edifying, that it may minister grace unto the hearers.\n4:30 And grieve not the holy Spirit of God, whereby ye are sealed unto the day of redemption.\n4:31 Let all bitterness, and wrath, and anger, and clamour, and evil speaking, be put away from you, with all malice:\n4:32 And be ye kind one to another, tenderhearted, forgiving one another, even as God for Christ's sake hath forgiven you."},
+                { ref: "EPHESIANS 5:11", text: "And have no fellowship with the unfruitful works of darkness, but rather reprove them."},
+                { ref: "COLOSSIANS 3:2", text: "Set your affection on things above, not on things on the earth."},
+                { ref: "COLOSSIANS 3:8", text: "But now ye also put off all these; anger, wrath, malice, blasphemy, filthy communication out of your mouth."},
+                { ref: "2 TIMOTHY 2:4", text: "No man that warreth entangleth himself with the affairs of this life; that he may please him who hath chosen him to be a soldier."},
+                { ref: "TITUS 2:11-12", text: "2:11 For the grace of God that bringeth salvation hath appeared to all men,\n2:12 Teaching us that, denying ungodliness and worldly lusts, we should live soberly, righteously, and godly, in this present world;"},
+                { ref: "HEBREWS 11:24-25", text: "11:24 By faith Moses, when he was come to years, refused to be called the son of Pharaoh's daughter;\n11:25 Choosing rather to suffer affliction with the people of God, than to enjoy the pleasures of sin for a season;"},
+                { ref: "JAMES 4:4", text: "Ye adulterers and adulteresses, know ye not that the friendship of the world is enmity with God? whosoever therefore will be a friend of the world is the enemy of God."},
+                { ref: "1 JOHN 2:15", text: "Love not the world, neither the things that are in the world. If any man love the world, the love of the Father is not in him."},
+                { ref: "REVELATION 21:8", text: "But the fearful, and unbelieving, and the abominable, and murderers, and whoremongers, and sorcerers, and idolaters, and all liars, shall have their part in the lake which burneth with fire and brimstone: which is the second death."}
+            ]
+        },
+        {
+            id: "4B1",
+            title: "The fruit of the Spirit is evident in the Spirit-filled life.",
+            verses: [
+                { ref: "1 CORINTHIANS 13:4-8", text: "13:4 Charity suffereth long, and is kind; charity envieth not; charity vaunteth not itself, is not puffed up,\n13:5 Doth not behave itself unseemly, seeketh not her own, is not easily provoked, thinketh no evil;\n13:6 Rejoiceth not in iniquity, but rejoiceth in the truth;\n13:7 Beareth all things, believeth all things, hopeth all things, endureth all things.\n13:8 Charity never faileth: but whether there be prophecies, they shall fail; whether there be tongues, they shall cease; whether there be knowledge, it shall vanish away."},
+                { ref: "GALATIANS 5:22-23", text: "5:22 But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith,\n5:23 Meekness, temperance: against such there is no law."},
+                { ref: "EPHESIANS 5:8-10", text: "5:8 For ye were sometimes darkness, but now are ye light in the Lord: walk as children of light:\n5:9 (For the fruit of the Spirit is in all goodness and righteousness and truth;)\n5:10 Proving what is acceptable unto the Lord."},
+                { ref: "PHILIPPIANS 1:9-11", text: "1:9 And this I pray, that your love may abound yet more and more in knowledge and in all judgment;\n1:10 That ye may approve things that are excellent; that ye may be sincere and without offence till the day of Christ;\n1:11 Being filled with the fruits of righteousness, which are by Jesus Christ, unto the glory and praise of God."}
+            ]
+        },
+        {
+            id: "4B2",
+            title: "Christian character and attitudes are to be developed.",
+            verses: [
+                { ref: "1 CORINTHIANS 13:11", text: "When I was a child, I spake as a child, I understood as a child, I thought as a child: but when I became a man, I put away childish things."},
+                { ref: "EPHESIANS 4:11-16", text: "4:11 And he gave some, apostles; and some, prophets; and some, evangelists; and some, pastors and teachers;\n4:12 For the perfecting of the saints, for the work of the ministry, for the edifying of the body of Christ:\n4:13 Till we all come in the unity of the faith, and of the knowledge of the Son of God, unto a perfect man, unto the measure of the stature of the fulness of Christ:\n4:14 That we henceforth be no more children, tossed to and fro, and carried about with every wind of doctrine, by the sleight of men, and cunning craftiness, whereby they lie in wait to deceive;\n4:15 But speaking the truth in love, may grow up into him in all things, which is the head, even Christ:\n4:16 From whom the whole body fitly joined together and compacted by that which every joint supplieth, according to the effectual working in the measure of every part, maketh increase of the body unto the edifying of itself in love."},
+                { ref: "1 PETER 2:1-3", text: "2:1 Wherefore laying aside all malice, and all guile, and hypocrisies, and envies, and all evil speakings,\n2:2 As newborn babes, desire the sincere milk of the word, that ye may grow thereby:\n2:3 If so be ye have tasted that the Lord is gracious."},
+                { ref: "2 PETER 1:4-9", text: "1:4 Whereby are given unto us exceeding great and precious promises: that by these ye might be partakers of the divine nature, having escaped the corruption that is in the world through lust.\n1:5 And beside this, giving all diligence, add to your faith virtue; and to virtue knowledge;\n1:6 And to knowledge temperance; and to temperance patience; and to patience godliness;\n1:7 And to godliness brotherly kindness; and to brotherly kindness charity.\n1:8 For if these things be in you, and abound, they make you that ye shall neither be barren nor unfruitful in the knowledge of our Lord Jesus Christ.\n1:9 But he that lacketh these things is blind, and cannot see afar off, and hath forgotten that he was purged from his old sins."},
+                { ref: "2 PETER 3:18", text: "But grow in grace, and in the knowledge of our Lord and Saviour Jesus Christ. To him be glory both now and for ever. Amen."}
+            ]
+        },
+        {
+            id: "4B3",
+            title: "The gifts of the Spirit are to be used by individuals in the church.",
+            verses: [
+                { ref: "1 CORINTHIANS 12:4-11", text: "12:4 Now there are diversities of gifts, but the same Spirit.\n12:5 And there are differences of administrations, but the same Lord.\n12:6 And there are diversities of operations, but it is the same God which worketh all in all.\n12:7 But the manifestation of the Spirit is given to every man to profit withal.\n12:8 For to one is given by the Spirit the word of wisdom; to another the word of knowledge by the same Spirit;\n12:9 To another faith by the same Spirit; to another the gifts of healing by the same Spirit;\n12:10 To another the working of miracles; to another prophecy; to another discerning of spirits; to another divers kinds of tongues;\n12:11 But all these worketh that one and the selfsame Spirit, dividing to every man severally as he will."},
+                { ref: "1 CORINTHIANS 14:1-5", text: "14:1 Follow after charity, and desire spiritual gifts, but rather that ye may prophesy.\n14:2 For he that speaketh in an unknown tongue speaketh not unto men, but unto God: for no man understandeth him; howbeit in the spirit he speaketh mysteries.\n14:3 But he that prophesieth speaketh unto men to edification, and exhortation, and comfort.\n14:4 He that speaketh in an unknown tongue edifieth himself; but he that prophesieth edifieth the church.\n14:5 I would that ye all spake with tongues but rather that ye prophesied: for greater is he that prophesieth than he that speaketh with tongues, except he interpret, that the church may receive edifying."},
+                { ref: "1 CORINTHIANS 14:26-28", text: "14:26 How is it then, brethren? when ye come together, every one of you hath a psalm, hath a doctrine, hath a tongue, hath a revelation, hath an interpretation. Let all things be done unto edifying.\n14:27 If any man speak in an unknown tongue, let it be by two, or at the most by three, and that by course; and let one interpret.\n14:28 But if there be no interpreter, let him keep silence in the church; and let him speak to himself, and to God."},
+                { ref: "1 CORINTHIANS 14:33", text: "For God is not the author of confusion, but of peace, as in all churches of the saints."},
+                { ref: "1 CORINTHIANS 14:39-40", text: "14:39 Wherefore, brethren, covet to prophesy, and forbid not to speak with tongues.\n14:40 Let all things be done decently and in order."}
+            ]
+        },
+        {
+            id: "4C1",
+            title: "We are commanded to worship and praise the Lord.",
+            verses: [
+                { ref: "1 CHRONICLES 15:28", text: "Thus all Israel brought up the ark of the covenant of the LORD with shouting, and with sound of the cornet, and with trumpets, and with cymbals, making a noise with psalteries and harps."},
+                { ref: "1 CHRONICLES 16:29", text: "Give unto the LORD the glory due unto his name: bring an offering, and come before him: worship the LORD in the beauty of holiness."},
+                { ref: "PSALMS 9:11", text: "Sing praises to the LORD, which dwelleth in Zion: declare among the people his doings."},
+                { ref: "PSALMS 22:3", text: "But thou art holy, O thou that inhabitest the praises of Israel."},
+                { ref: "PSALMS 33:2", text: "Praise the LORD with harp: sing unto him with the psaltery and an instrument of ten strings."},
+                { ref: "PSALMS 47:1", text: "O clap your hands, all ye people; shout unto God with the voice of triumph."},
+                { ref: "PSALMS 95:1-2", text: "95:1 O come, let us sing unto the LORD: let us make a joyful noise to the rock of our salvation.\n95:2 Let us come before his presence with thanksgiving, and make a joyful noise unto him with psalms."},
+                { ref: "PSALMS 95:6", text: "O come, let us worship and bow down: let us kneel before the LORD our maker."},
+                { ref: "PSALMS 100:4", text: "Enter into his gates with thanksgiving, and into his courts with praise: be thankful unto him, and bless his name."},
+                { ref: "PSALMS 150:1-6", text: "150:1 Praise ye the LORD. Praise God in his sanctuary: praise him in the firmament of his power.\n150:2 Praise him for his mighty acts: praise him according to his excellent greatness.\n150:3 Praise him with the sound of the trumpet: praise him with the psaltery and harp.\n150:4 Praise him with the timbrel and dance: praise him with stringed instruments and organs.\n150:5 Praise him upon the loud cymbals: praise him upon the high sounding cymbals.\n150:6 Let every thing that hath breath praise the LORD. Praise ye the LORD."},
+                { ref: "JOHN 4:23-24", text: "4:23 But the hour cometh, and now is, when the true worshippers shall worship the Father in spirit and in truth: for the Father seeketh such to worship him.\n4:24 God is a Spirit: and they that worship him must worship him in spirit and in truth."},
+                { ref: "EPHESIANS 5:18-19", text: "5:18 And be not drunk with wine, wherein is excess; but be filled with the Spirit;\n5:19 Speaking to yourselves in psalms and hymns and spiritual songs, singing and making melody in your heart to the Lord;"},
+                { ref: "PHILIPPIANS 2:9-11", text: "2:9 Wherefore God also hath highly exalted him, and given him a name which is above every name:\n2:10 That at the name of Jesus every knee should bow, of things in heaven, and things in earth, and things under the earth;\n2:11 And that every tongue should confess that Jesus Christ is Lord, to the glory of God the Father."},
+                { ref: "HEBREWS 13:15", text: "By him therefore let us offer the sacrifice of praise to God continually, that is, the fruit of our lips giving thanks to his name."},
+                { ref: "1 PETER 2:9", text: "But ye are a chosen generation, a royal priesthood, an holy nation, a peculiar people; that ye should shew forth the praises of him who hath called you out of darkness into his marvellous light;"}
+            ]
+        },
+        {
+            id: "4C2",
+            title: "Prayer is a daily essential of our walk with God.",
+            verses: [
+                { ref: "1 CHRONICLES 16:11", text: "Seek the LORD and his strength, seek his face continually."},
+                { ref: "PSALMS 91:15", text: "He shall call upon me, and I will answer him: I will be with him in trouble; I will deliver him, and honour him"},
+                { ref: "ISAIAH 56:7", text: "Even them will I bring to my holy mountain, and make them joyful in my house of prayer: their burnt offerings and their sacrifices shall be accepted upon mine altar; for mine house shall be called an house of prayer for all people."},
+                { ref: "JEREMIAH 29:13", text: "And ye shall seek me, and find me, when ye shall search for me with all your heart."},
+                { ref: "MATTHEW 6:5-13", text: "6:5 And when thou prayest, thou shalt not be as the hypocrites are: for they love to pray standing in the synagogues and in the corners of the streets, that they may be seen of men. Verily I say unto you, They have their reward.\n6:6 But thou, when thou prayest, enter into thy closet, and when thou hast shut thy door, pray to thy Father which is in secret; and thy Father which seeth in secret shall reward thee openly.\n6:7 But when ye pray, use not vain repetitions, as the heathen do: for they think that they shall be heard for their much speaking.\n6:8 Be not ye therefore like unto them: for your Father knoweth what things ye have need of, before ye ask him.\n6:9 After this manner therefore pray ye: Our Father which art in heaven, Hallowed be thy name.\n6:10 Thy kingdom come, Thy will be done in earth, as it is in heaven.\n6:11 Give us this day our daily bread.\n6:12 And forgive us our debts, as we forgive our debtors.\n6:13 And lead us not into temptation, but deliver us from evil: For thine is the kingdom, and the power, and the glory, for ever. Amen."},
+                { ref: "MATTHEW 7:7-11", text: "7:7 Ask, and it shall be given you; seek, and ye shall find; knock, and it shall be opened unto you:\n7:8 For every one that asketh receiveth; and he that seeketh findeth; and to him that knocketh it shall be opened.\n7:9 Or what man is there of you, whom if his son ask bread, will he give him a stone?\n7:10 Or if he ask a fish, will he give him a serpent?\n7:11 If ye then, being evil, know how to give good gifts unto your children, how much more shall your heavenly Father which is in heaven give good things to them that ask him?"},
+                { ref: "MATTHEW 18:19", text: "Again I say unto you, That if two of you shall agree on earth as touching any thing that they shall ask, it shall be done for them of my Father which is in heaven."},
+                { ref: "MATTHEW 26:41", text: "Watch and pray, that ye enter not into temptation: the spirit indeed is willing, but the flesh is weak."},
+                { ref: "LUKE 18:1", text: "And he spake a parable unto them to this end, that men ought always to pray, and not to faint;"},
+                { ref: "JOHN 16:24", text: "Hitherto have ye asked nothing in my name: ask, and ye shall receive, that your joy may be full."},
+                { ref: "EPHESIANS 6:18", text: "Praying always with all prayer and supplication in the Spirit, and watching thereunto with all perseverance and supplication for all saints;"},
+                { ref: "PHILIPPIANS 4:6", text: "Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God."},
+                { ref: "1 THESSALONIANS 5:17", text: "Pray without ceasing."},
+                { ref: "1 TIMOTHY 2:8", text: "I will therefore that men pray every where, lifting up holy hands, without wrath and doubting."},
+                { ref: "JAMES 5:13-18", text: "5:13 Is any among you afflicted? let him pray. Is any merry? let him sing psalms.\n5:14 Is any sick among you? let him call for the elders of the church; and let them pray over him, anointing him with oil in the name of the Lord:\n5:15 And the prayer of faith shall save the sick, and the Lord shall raise him up; and if he have committed sins, they shall be forgiven him.\n5:16 Confess your faults one to another, and pray one for another, that ye may be healed. The effectual fervent prayer of a righteous man availeth much.\n5:17 Elias was a man subject to like passions as we are, and he prayed earnestly that it might not rain: and it rained not on the earth by the space of three years and six months.\n5:18 And he prayed again, and the heaven gave rain, and the earth brought forth her fruit."}
+            ]
+        },
+        {
+            id: "4C3",
+            title: "Fasting is an important practice in our Christian life.",
+            verses: [
+                { ref: "JOEL 1:14", text: "Sanctify ye a fast, call a solemn assembly, gather the elders and all the inhabitants of the land into the house of the LORD your God, and cry unto the LORD,"},
+                { ref: "MATTHEW 6:16-18", text: "6:16 Moreover when ye fast, be not, as the hypocrites, of a sad countenance: for they disfigure their faces, that they may appear unto men to fast. Verily I say unto you, They have their reward.\n6:17 But thou, when thou fastest, anoint thine head, and wash thy face;\n6:18 That thou appear not unto men to fast, but unto thy Father which is in secret: and thy Father, which seeth in secret, shall reward thee openly."},
+                { ref: "MATTHEW 17:21", text: "Howbeit this kind goeth not out but by prayer and fasting."},
+                { ref: "ACTS 13:2", text: "As they ministered to the Lord, and fasted, the Holy Ghost said, Separate me Barnabas and Saul for the work whereunto I have called them."},
+                { ref: "ACTS 14:23", text: "And when they had ordained them elders in every church, and had prayed with fasting, they commended them to the Lord, on whom they believed."}
+            ]
+        },
+        {
+            id: "4C4",
+            title: "Our apparel and adornment should glorify God and reflect Christ in us.",
+            verses: [
+                { ref: "DEUTERONOMY 22:5", text: "The woman shall not wear that which pertaineth unto a man, neither shall a man put on a woman's garment: for all that do so are abomination unto the LORD thy God."},
+                { ref: "1 CORINTHIANS 11:3-10", text: "11:3 But I would have you know, that the head of every man is Christ; and the head of the woman is the man; and the head of Christ is God.\n11:4 Every man praying or prophesying, having his head covered, dishonoureth his head.\n11:5 But every woman that prayeth or prophesieth with her head uncovered dishonoureth her head: for that is even all one as if she were shaven.\n11:6 For if the woman be not covered, let her also be shorn: but if it be a shame for a woman to be shorn or shaven, let her be covered.\n11:7 For a man indeed ought not to cover his head, forasmuch as he is the image and glory of God: but the woman is the glory of the man.\n11:8 For the man is not of the woman: but the woman of the man.\n11:9 Neither was the man created for the woman; but the woman for the man.\n11:10 For this cause ought the woman to have power on her head because of the angels."},
+                { ref: "1 CORINTHIANS 11:13-16", text: "11:13 Judge in yourselves: is it comely that a woman pray unto God uncovered?\n11:14 Doth not even nature itself teach you, that, if a man have long hair, it is a shame unto him?\n11:15 But if a woman have long hair, it is a glory to her: for her hair is given her for a covering.\n11:16 But if any man seem to be contentious, we have no such custom, neither the churches of God."},
+                { ref: "1 TIMOTHY 2:8-10", text: "2:8 I will therefore that men pray every where, lifting up holy hands, without wrath and doubting.\n2:9 In like manner also, that women adorn themselves in modest apparel, with shamefacedness and sobriety; not with broided hair, or gold, or pearls, or costly array;\n2:10 But (which becometh women professing godliness) with good works."},
+                { ref: "1 PETER 3:3-4", text: "3:3 Whose adorning let it not be that outward adorning of plaiting the hair, and of wearing of gold, or of putting on of apparel;\n3:4 But let it be the hidden man of the heart, in that which is not corruptible, even the ornament of a meek and quiet spirit, which is in the sight of God of great price."}
+            ]
+        },
+        {
+            id: "4D1",
+            title: "Regular church attendance is necessary and spiritually enriching.",
+            verses: [
+                { ref: "PSALMS 23:6", text: "Surely goodness and mercy shall follow me all the days of my life: and I will dwell in the house of the LORD for ever."},
+                { ref: "PSALMS 27:4", text: "One thing have I desired of the LORD, that will I seek after; that I may dwell in the house of the LORD all the days of my life, to behold the beauty of the LORD, and to enquire in his temple."},
+                { ref: "PSALMS 84:4", text: "Blessed are they that dwell in thy house: they will be still praising thee. Selah."},
+                { ref: "PSALMS 84:10", text: "For a day in thy courts is better than a thousand. I had rather be a doorkeeper in the house of my God, than to dwell in the tents of wickedness."},
+                { ref: "PSALMS 122:1", text: "I was glad when they said unto me, Let us go into the house of the LORD."},
+                { ref: "LUKE 4:16", text: "And he came to Nazareth, where he had been brought up: and, as his custom was, he went into the synagogue on the sabbath day, and stood up for to read."},
+                { ref: "1 CORINTHIANS 4:2", text: "Moreover it is required in stewards, that a man be found faithful."},
+                { ref: "HEBREWS 10:24-25", text: "10:24 And let us consider one another to provoke unto love and to good works:\n10:25 Not forsaking the assembling of ourselves together, as the manner of some is; but exhorting one another: and so much the more, as ye see the day approaching."}
+            ]
+        },
+        {
+            id: "4D2",
+            title: "Honor and submission are to be given to God-ordained authority.",
+            verses: [
+                { ref: "1 CORINTHIANS 9:9", text: "For it is written in the law of Moses, Thou shalt not muzzle the mouth of the ox that treadeth out the corn. Doth God take care for oxen?"},
+                { ref: "1 CORINTHIANS 9:13-14", text: "9:13 Do ye not know that they which minister about holy things live of the things of the temple? and they which wait at the altar are partakers with the altar?\n9:14 Even so hath the Lord ordained that they which preach the gospel should live of the gospel."},
+                { ref: "1 CORINTHIANS 12:28", text: "And God hath set some in the church, first apostles, secondarily prophets, thirdly teachers, after that miracles, then gifts of healings, helps, governments, diversities of tongues."},
+                { ref: "EPHESIANS 2:19-22", text: "2:19 Now therefore ye are no more strangers and foreigners, but fellowcitizens with the saints, and of the household of God;\n2:20 And are built upon the foundation of the apostles and prophets, Jesus Christ himself being the chief corner stone;\n2:21 In whom all the building fitly framed together groweth unto an holy temple in the Lord:\n2:22 In whom ye also are builded together for an habitation of God through the Spirit."},
+                { ref: "EPHESIANS 5:21", text: "Submitting yourselves one to another in the fear of God."},
+                { ref: "1 THESSALONIANS 5:12-13", text: "5:12 And we beseech you, brethren, to know them which labour among you, and are over you in the Lord, and admonish you;\n5:13 And to esteem them very highly in love for their work's sake. And be at peace among yourselves."},
+                { ref: "1 TIMOTHY 5:17", text: "Let the elders that rule well be counted worthy of double honour, especially they who labour in the word and doctrine."},
+                { ref: "HEBREWS 13:7", text: "Remember them which have the rule over you, who have spoken unto you the word of God: whose faith follow, considering the end of their conversation."},
+                { ref: "HEBREWS 13:17", text: "Obey them that have the rule over you, and submit yourselves: for they watch for your souls, as they that must give account, that they may do it with joy, and not with grief: for that is unprofitable for you."}
+            ]
+        },
+        {
+            id: "4D3",
+            title: "Sharing God's goodness in our own lives will lead others closer to the Lord.",
+            verses: [
+                { ref: "EXODUS 4:12", text: "Now therefore go, and I will be with thy mouth, and teach thee what thou shalt say."},
+                { ref: "PSALMS 66:16", text: "Come and hear, all ye that fear God, and I will declare what he hath done for my soul."},
+                { ref: "JEREMIAH 20:9", text: "Then I said, I will not make mention of him, nor speak any more in his name. But his word was in mine heart as a burning fire shut up in my bones, and I was weary with forbearing, and I could not stay."},
+                { ref: "LUKE 12:12", text: "For the Holy Ghost shall teach you in the same hour what ye ought to say."},
+                { ref: "JOHN 13:35", text: "By this shall all men know that ye are my disciples, if ye have love one to another."},
+                { ref: "ACTS 1:8", text: "But ye shall receive power, after that the Holy Ghost is come upon you: and ye shall be witnesses unto me both in Jerusalem, and in all Judaea, and in Samaria, and unto the uttermost part of the earth."},
+                { ref: "ACTS 4:20", text: "For we cannot but speak the things which we have seen and heard."},
+                { ref: "1 CORINTHIANS 2:13", text: "Which things also we speak, not in the words which man's wisdom teacheth, but which the Holy Ghost teacheth; comparing spiritual things with spiritual."},
+                { ref: "2 TIMOTHY 1:8", text: "Be not thou therefore ashamed of the testimony of our Lord, nor of me his prisoner: but be thou partaker of the afflictions of the gospel according to the power of God;"},
+                { ref: "1 PETER 3:15", text: "But sanctify the Lord God in your hearts: and be ready always to give an answer to every man that asketh you a reason of the hope that is in you with meekness and fear:"}
+            ]
+        }
+    ]
+  }
 ];
 
-// --- HELPER ---
-const escapeRegExp = (string) => {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-};
+        // --- HELPER ---
+        const escapeRegExp = (string) => {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        };
 
-const highlightText = (text, query) => {
-    if (!query) return text;
-    try {
-        const terms = query.split(',').map(term => term.trim()).filter(term => term.length > 0);
-        if (terms.length === 0) return text;
+        const highlightText = (text, query) => {
+            if (!query) return text;
+            try {
+                const terms = query.split(',').map(term => term.trim()).filter(term => term.length > 0);
+                if (terms.length === 0) return text;
 
-        const escapedTerms = terms.map(escapeRegExp).join('|');
-        const regex = new RegExp(`(${escapedTerms})`, 'gi');
-        
-        const parts = text.split(regex);
-        
-        return parts.map((part, index) => {
-             const isMatch = terms.some(term => part.toLowerCase() === term.toLowerCase());
-             return isMatch ? 
-                <span key={index} className="bg-yellow-200 font-semibold text-slate-900 rounded-sm px-0.5">{part}</span> : 
-                part;
-        });
-    } catch (e) {
-        console.error(e);
-        return text;
-    }
-};
-
-const countMatchesInString = (text, query) => {
-    if (!query || !text) return 0;
-    try {
-        const terms = query.split(',').map(term => term.trim()).filter(term => term.length > 0);
-        if (terms.length === 0) return 0;
-
-        const escapedTerms = terms.map(escapeRegExp).join('|');
-        const regex = new RegExp(escapedTerms, 'gi');
-        const matches = text.match(regex);
-        return matches ? matches.length : 0;
-    } catch (e) {
-        return 0;
-    }
-};
-
-// --- APP COMPONENT ---
-const App = () => {
-  const [view, setView] = React.useState('home'); // home, section, subsection, search
-  const [selectedSection, setSelectedSection] = React.useState(null);
-  const [selectedSubsection, setSelectedSubsection] = React.useState(null);
-  const [searchQuery, setSearchQuery] = React.useState('');
-
-  const filteredVerses = React.useMemo(() => {
-    if (!searchQuery) return [];
-    
-    const terms = searchQuery.toLowerCase().split(',').map(t => t.trim()).filter(t => t);
-    const results = [];
-    
-    // Helper function to process verses
-    const processVerses = (verses, sectionId, subId, subTitle) => {
-        verses.forEach(v => {
-            const isMatch = terms.every(term => 
-                v.text.toLowerCase().includes(term) || v.ref.toLowerCase().includes(term)
-            );
-            if (isMatch) {
-                results.push({ ...v, sectionId, subId, subTitle });
-            }
-        });
-    };
-
-    BIBLE_DATA.forEach(section => {
-      // Handle regular subsections
-      if (section.subsections) {
-          section.subsections.forEach(sub => {
-            // Check if subsection has nested subsections (like 4D was previously, though now it's flattened)
-            if (sub.subsections) {
-                sub.subsections.forEach(nestedSub => {
-                    processVerses(nestedSub.verses, section.id, nestedSub.id, nestedSub.title);
+                const escapedTerms = terms.map(escapeRegExp).join('|');
+                const regex = new RegExp(`(${escapedTerms})`, 'gi');
+                
+                const parts = text.split(regex);
+                
+                return parts.map((part, index) => {
+                     const isMatch = terms.some(term => part.toLowerCase() === term.toLowerCase());
+                     return isMatch ? 
+                        <span key={index} className="bg-yellow-200 font-semibold text-slate-900 rounded-sm px-0.5">{part}</span> : 
+                        part;
                 });
-            } else if (sub.verses) {
-                processVerses(sub.verses, section.id, sub.id, sub.title);
+            } catch (e) {
+                console.error(e);
+                return text;
             }
-          });
-      }
-    });
-    return results;
-  }, [searchQuery]);
+        };
 
-  const totalOccurrences = React.useMemo(() => {
-     if (!searchQuery) return 0;
-     return filteredVerses.reduce((acc, verse) => {
-         return acc + 
-                countMatchesInString(verse.text, searchQuery) + 
-                countMatchesInString(verse.ref, searchQuery);
-     }, 0);
-  }, [filteredVerses, searchQuery]);
+        const countMatchesInString = (text, query) => {
+            if (!query || !text) return 0;
+            try {
+                const terms = query.split(',').map(term => term.trim()).filter(term => term.length > 0);
+                if (terms.length === 0) return 0;
 
-  const handleSectionClick = (section) => {
-    setSelectedSection(section);
-    setView('section');
-  };
+                const escapedTerms = terms.map(escapeRegExp).join('|');
+                const regex = new RegExp(escapedTerms, 'gi');
+                const matches = text.match(regex);
+                return matches ? matches.length : 0;
+            } catch (e) {
+                return 0;
+            }
+        };
 
-  const handleSubsectionClick = (subsection) => {
-    if (subsection.subsections) {
-        // Special handling for 4D which acts as a container
-        setSelectedSection(subsection); // Treat 4D as a section for navigation purposes
-        setView('section');
-    } else {
-        setSelectedSubsection(subsection);
-        setView('subsection');
-    }
-  };
+        // --- APP COMPONENT ---
+        const App = () => {
+          const [view, setView] = useState('home'); // home, section, subsection, search
+          const [selectedSection, setSelectedSection] = useState(null);
+          const [selectedSubsection, setSelectedSubsection] = useState(null);
+          const [searchQuery, setSearchQuery] = useState('');
 
-  const goHome = () => {
-    setView('home');
-    setSelectedSection(null);
-    setSelectedSubsection(null);
-    setSearchQuery('');
-  };
-
-  // Helper to render subsections
-  const renderSubsections = (section) => {
-      let subsToRender = section.subsections || [];
-      
-      return subsToRender.map((sub) => (
-       <div 
-         key={sub.id}
-         onClick={() => handleSubsectionClick(sub)}
-         className="bg-white rounded-lg p-5 shadow-sm border border-slate-100 hover:border-indigo-200 cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]"
-       >
-         <div className="flex items-center gap-4">
-            <div className="bg-indigo-50 text-indigo-700 font-bold w-10 h-10 rounded-full flex items-center justify-center shrink-0 border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
-              {sub.id}
-            </div>
-            <h3 className="font-medium text-slate-700 group-hover:text-indigo-800 transition-colors pr-4">
-              {sub.title}
-            </h3>
-         </div>
-         <div className="flex items-center gap-3">
-           <span className="text-xs font-semibold bg-slate-50 text-slate-400 px-2 py-1 rounded hidden sm:inline-block">
-              {sub.verses ? sub.verses.length : (sub.subsections ? sub.subsections.length + ' topics' : '0')}
-           </span>
-           <div className="w-5 h-5 text-slate-300 group-hover:text-indigo-400">
-               <ChevronRight />
-           </div>
-         </div>
-       </div>
-     ));
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
-      {/* Header */}
-      <header className="bg-indigo-700 text-white shadow-lg sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 py-4">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-3 cursor-pointer hover:opacity-90 transition-opacity" onClick={goHome}>
-              <Book className="text-indigo-200" />
-              <div>
-                <h1 className="text-xl font-bold leading-tight">2026 Verse Lookup</h1>
-                <p className="text-indigo-200 text-xs">Ready. Always.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Search Bar */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search verses (e.g., 'faith', 'Acts 2:38')..."
-              className="w-full pl-10 pr-10 py-3 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-300 shadow-inner bg-indigo-50 placeholder-indigo-400 transition-all"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                if (e.target.value) setView('search');
-                else if (view === 'search') goHome();
-              }}
-            />
-            <div className="absolute left-3 top-3.5 text-indigo-400">
-                <Search />
-            </div>
-            {searchQuery && (
-              <button 
-                onClick={() => { setSearchQuery(''); goHome(); }}
-                className="absolute right-3 top-3.5 text-indigo-400 hover:text-indigo-600"
-              >
-                <X />
-              </button>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-4 py-6">
-        
-        {/* Breadcrumbs */}
-        {view !== 'home' && view !== 'search' && (
-          <div className="flex items-center gap-2 text-sm text-slate-500 mb-6 overflow-x-auto whitespace-nowrap pb-2 scrollbar-hide">
-            <button onClick={goHome} className="hover:text-indigo-600 flex items-center gap-1 font-medium transition-colors">
-              <Home className="w-4 h-4" /> Home
-            </button>
-            <ChevronRight className="w-4 h-4 flex-shrink-0 text-slate-300" />
-            {selectedSection && (
-              <button onClick={() => setView('section')} className={`hover:text-indigo-600 transition-colors ${view === 'section' ? 'font-bold text-indigo-700' : ''}`}>
-                Section {selectedSection.id}
-              </button>
-            )}
-            {selectedSubsection && view === 'subsection' && (
-              <>
-                <ChevronRight className="w-4 h-4 flex-shrink-0 text-slate-300" />
-                <span className="font-bold text-indigo-700 truncate max-w-[200px]">
-                  {selectedSubsection.id}
-                </span>
-              </>
-            )}
-          </div>
-        )}
-
-        {/* VIEW: HOME */}
-        {view === 'home' && (
-          <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
-            {BIBLE_DATA.map((section) => (
-              <div 
-                key={section.id}
-                onClick={() => handleSectionClick(section)}
-                className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer border border-slate-100 group active:scale-[0.99]"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <span className="inline-block bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded mb-2 group-hover:bg-indigo-200 transition-colors">
-                      SECTION {section.id}
-                    </span>
-                    <h2 className="text-lg font-bold text-slate-800 group-hover:text-indigo-700 transition-colors">
-                      {section.title}
-                    </h2>
-                    <p className="text-slate-500 text-sm mt-2">
-                      {section.subsections.length} Topics
-                    </p>
-                  </div>
-                  <div className="text-slate-300 group-hover:text-indigo-500 transition-colors">
-                      <ChevronRight />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* VIEW: SECTION */}
-        {view === 'section' && selectedSection && (
-          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-             <div className="mb-6">
-                <h2 className="text-2xl font-bold text-slate-800">{selectedSection.title}</h2>
-                <p className="text-slate-500">Select a topic to view verses</p>
-             </div>
-             
-             {renderSubsections(selectedSection)}
-          </div>
-        )}
-
-        {/* VIEW: SUBSECTION (VERSE LIST) */}
-        {view === 'subsection' && selectedSubsection && (
-          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <div className="mb-6 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
-               <div className="flex items-center gap-2 mb-2">
-                  <span className="bg-indigo-600 text-white text-xs font-bold px-2 py-0.5 rounded shadow-sm">
-                    {selectedSection.id}{selectedSubsection.id}
-                  </span>
-               </div>
-               <h2 className="text-xl font-bold text-indigo-900 leading-snug">{selectedSubsection.title}</h2>
-            </div>
-
-            <div className="grid gap-6">
-              {selectedSubsection.verses && selectedSubsection.verses.map((verse, idx) => (
-                <div key={idx} className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-indigo-500 hover:shadow-md transition-shadow">
-                  <div className="flex justify-between items-center mb-3">
-                    <h3 className="text-lg font-bold text-slate-800 bg-slate-100 px-3 py-1 rounded inline-block">
-                      {verse.ref}
-                    </h3>
-                  </div>
-                  <p className="text-slate-700 leading-relaxed font-serif text-lg whitespace-pre-line">
-                    {verse.text}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* VIEW: SEARCH RESULTS */}
-        {view === 'search' && (
-          <div className="animate-in fade-in duration-200">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-slate-700">
-              <div className="w-5 h-5 text-indigo-600">
-                <Search />
-              </div>
-              {totalOccurrences} Match{totalOccurrences !== 1 && 'es'} found
-            </h2>
+          const filteredVerses = useMemo(() => {
+            if (!searchQuery) return [];
             
-            {filteredVerses.length === 0 ? (
-               <div className="text-center py-20 text-slate-400 bg-white rounded-xl border border-dashed border-slate-200">
-                 <div className="w-12 h-12 mx-auto mb-3 text-slate-200">
-                    <Search />
-                 </div>
-                 <p className="text-lg font-medium">No verses found</p>
-                 <p className="text-sm">Try searching for a different word or reference</p>
-               </div>
-            ) : (
-              <div className="grid gap-4">
-                {filteredVerses.map((verse, idx) => (
-                  <div 
-                    key={idx} 
-                    className="bg-white p-5 rounded-lg shadow-sm border border-slate-100 hover:border-indigo-200 transition-colors cursor-pointer"
-                    onClick={() => {
-                       // Navigation logic needs to find parent section
-                       // We can use the IDs passed in results
-                       const section = BIBLE_DATA.find(s => s.id === verse.sectionId);
-                       let subsection;
-                       // Handle flattened vs nested lookup
-                       if (section) {
-                           // Search direct children
-                           subsection = section.subsections?.find(sub => sub.id === verse.subId);
-                           if (!subsection) {
-                               // Deep search for 4D case (though flattened now, keeping logic robust)
-                               section.subsections?.forEach(sub => {
-                                   if (sub.subsections) {
-                                       const found = sub.subsections.find(n => n.id === verse.subId);
-                                       if (found) subsection = found;
-                                   }
-                               });
-                           }
-                       }
+            const terms = searchQuery.toLowerCase().split(',').map(t => t.trim()).filter(t => t);
+            const results = [];
+            
+            // Helper function to process verses
+            const processVerses = (verses, sectionId, subId, subTitle) => {
+                verses.forEach(v => {
+                    const isMatch = terms.every(term => 
+                        v.text.toLowerCase().includes(term) || v.ref.toLowerCase().includes(term)
+                    );
+                    if (isMatch) {
+                        results.push({ ...v, sectionId, subId, subTitle });
+                    }
+                });
+            };
 
-                       if (section && subsection) {
-                           handleSectionClick(section);
-                           setTimeout(() => handleSubsectionClick(subsection), 0);
-                           setSearchQuery(''); 
-                       }
-                    }}
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                       <span className="text-xs font-bold text-indigo-500 uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded">
-                         {verse.sectionId}{verse.subId}
-                       </span>
-                       <span className="text-xs text-slate-400 truncate max-w-[150px]">{verse.subTitle}</span>
+            BIBLE_DATA.forEach(section => {
+              // Handle regular subsections
+              if (section.subsections) {
+                  section.subsections.forEach(sub => {
+                    // Check if subsection has nested subsections (like 4D was previously, though now it's flattened)
+                    if (sub.subsections) {
+                        sub.subsections.forEach(nestedSub => {
+                            processVerses(nestedSub.verses, section.id, nestedSub.id, nestedSub.title);
+                        });
+                    } else if (sub.verses) {
+                        processVerses(sub.verses, section.id, sub.id, sub.title);
+                    }
+                  });
+              }
+            });
+            return results;
+          }, [searchQuery]);
+
+          const totalOccurrences = useMemo(() => {
+             if (!searchQuery) return 0;
+             return filteredVerses.reduce((acc, verse) => {
+                 return acc + 
+                        countMatchesInString(verse.text, searchQuery) + 
+                        countMatchesInString(verse.ref, searchQuery);
+             }, 0);
+          }, [filteredVerses, searchQuery]);
+
+          const handleSectionClick = (section) => {
+            setSelectedSection(section);
+            setView('section');
+          };
+
+          const handleSubsectionClick = (subsection) => {
+            // If it's a nested section like 4D, we might want to just show its children directly or navigate deeper.
+            // For simplicity in this UI structure, if a subsection has its own subsections (like 4D),
+            // we treat it as a 'section' view effectively, or flatter.
+            // Given the data structure for 4D is slightly different (nested), let's flatten it for display if needed.
+            
+            if (subsection.subsections) {
+                // Special handling for 4D which acts as a container
+                setSelectedSection(subsection); // Treat 4D as a section for navigation purposes
+                setView('section');
+            } else {
+                setSelectedSubsection(subsection);
+                setView('subsection');
+            }
+          };
+
+          const goHome = () => {
+            setView('home');
+            setSelectedSection(null);
+            setSelectedSubsection(null);
+            setSearchQuery('');
+          };
+
+          // Helper to render subsections, handling potential nested structure in 4D
+          const renderSubsections = (section) => {
+              // If the section ITSELF has subsections (like 1, 2, 3, 4)
+              let subsToRender = section.subsections || [];
+              
+              // If we clicked on 4D (which is inside 4's subsections list but acts like a parent to 4D1, 4D2...),
+              // we need to handle that. 
+              // Actually, my data structure for 4D above put "subsections" INSIDE the object in the main array.
+              // Let's adjust logic: 
+              // If we are viewing "Section 4", we see 4A, 4B, 4C, 4D.
+              // If we click 4D, we should see 4D1, 4D2, 4D3.
+              
+              return subsToRender.map((sub) => (
+               <div 
+                 key={sub.id}
+                 onClick={() => handleSubsectionClick(sub)}
+                 className="bg-white rounded-lg p-5 shadow-sm border border-slate-100 hover:border-indigo-200 cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]"
+               >
+                 <div className="flex items-center gap-4">
+                    <div className="bg-indigo-50 text-indigo-700 font-bold w-10 h-10 rounded-full flex items-center justify-center shrink-0 border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                      {sub.id}
                     </div>
-                    <h3 className="text-md font-bold text-slate-800 mb-2">{highlightText(verse.ref, searchQuery)}</h3>
-                    <p className="text-slate-600 text-sm whitespace-pre-line">{highlightText(verse.text, searchQuery)}</p>
+                    <h3 className="font-medium text-slate-700 group-hover:text-indigo-800 transition-colors pr-4">
+                      {sub.title}
+                    </h3>
+                 </div>
+                 <div className="flex items-center gap-3">
+                   <span className="text-xs font-semibold bg-slate-50 text-slate-400 px-2 py-1 rounded hidden sm:inline-block">
+                      {sub.verses ? sub.verses.length : (sub.subsections ? sub.subsections.length + ' topics' : '0')}
+                   </span>
+                   <div className="w-5 h-5 text-slate-300 group-hover:text-indigo-400">
+                       <ChevronRightIcon />
+                   </div>
+                 </div>
+               </div>
+             ));
+          };
+
+          return (
+            <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
+              {/* Header */}
+              <header className="bg-indigo-700 text-white shadow-lg sticky top-0 z-10">
+                <div className="max-w-5xl mx-auto px-4 py-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-3 cursor-pointer hover:opacity-90 transition-opacity" onClick={goHome}>
+                      <BookIcon className="text-indigo-200" />
+                      <div>
+                        <h1 className="text-xl font-bold leading-tight">2026 Verse Lookup</h1>
+                        <p className="text-indigo-200 text-xs">Ready. Always.</p>
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
 
-      </main>
-    </div>
-  );
-};
+                  {/* Search Bar */}
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search verses (e.g., 'faith', 'Acts 2:38')..."
+                      className="w-full pl-10 pr-10 py-3 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-300 shadow-inner bg-indigo-50 placeholder-indigo-400 transition-all"
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        if (e.target.value) setView('search');
+                        else if (view === 'search') goHome();
+                      }}
+                    />
+                    <div className="absolute left-3 top-3.5 text-indigo-400">
+                        <SearchIcon />
+                    </div>
+                    {searchQuery && (
+                      <button 
+                        onClick={() => { setSearchQuery(''); goHome(); }}
+                        className="absolute right-3 top-3.5 text-indigo-400 hover:text-indigo-600"
+                      >
+                        <XIcon />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </header>
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+              {/* Main Content */}
+              <main className="max-w-5xl mx-auto px-4 py-6">
+                
+                {/* Breadcrumbs */}
+                {view !== 'home' && view !== 'search' && (
+                  <div className="flex items-center gap-2 text-sm text-slate-500 mb-6 overflow-x-auto whitespace-nowrap pb-2 scrollbar-hide">
+                    <button onClick={goHome} className="hover:text-indigo-600 flex items-center gap-1 font-medium transition-colors">
+                      <HomeIcon className="w-4 h-4" /> Home
+                    </button>
+                    <ChevronRightIcon className="w-4 h-4 flex-shrink-0 text-slate-300" />
+                    {selectedSection && (
+                      <button onClick={() => setView('section')} className={`hover:text-indigo-600 transition-colors ${view === 'section' ? 'font-bold text-indigo-700' : ''}`}>
+                        Section {selectedSection.id}
+                      </button>
+                    )}
+                    {selectedSubsection && view === 'subsection' && (
+                      <>
+                        <ChevronRightIcon className="w-4 h-4 flex-shrink-0 text-slate-300" />
+                        <span className="font-bold text-indigo-700 truncate max-w-[200px]">
+                          {selectedSubsection.id}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {/* VIEW: HOME */}
+                {view === 'home' && (
+                  <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
+                    {BIBLE_DATA.map((section) => (
+                      <div 
+                        key={section.id}
+                        onClick={() => handleSectionClick(section)}
+                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer border border-slate-100 group active:scale-[0.99]"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <span className="inline-block bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded mb-2 group-hover:bg-indigo-200 transition-colors">
+                              SECTION {section.id}
+                            </span>
+                            <h2 className="text-lg font-bold text-slate-800 group-hover:text-indigo-700 transition-colors">
+                              {section.title}
+                            </h2>
+                            <p className="text-slate-500 text-sm mt-2">
+                              {section.subsections.length} Topics
+                            </p>
+                          </div>
+                          <div className="text-slate-300 group-hover:text-indigo-500 transition-colors">
+                              <ChevronRightIcon />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* VIEW: SECTION */}
+                {view === 'section' && selectedSection && (
+                  <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                     <div className="mb-6">
+                        <h2 className="text-2xl font-bold text-slate-800">{selectedSection.title}</h2>
+                        <p className="text-slate-500">Select a topic to view verses</p>
+                     </div>
+                     
+                     {renderSubsections(selectedSection)}
+                  </div>
+                )}
+
+                {/* VIEW: SUBSECTION (VERSE LIST) */}
+                {view === 'subsection' && selectedSubsection && (
+                  <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                    <div className="mb-6 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                       <div className="flex items-center gap-2 mb-2">
+                          <span className="bg-indigo-600 text-white text-xs font-bold px-2 py-0.5 rounded shadow-sm">
+                            {selectedSection.id}{selectedSubsection.id}
+                          </span>
+                       </div>
+                       <h2 className="text-xl font-bold text-indigo-900 leading-snug">{selectedSubsection.title}</h2>
+                    </div>
+
+                    <div className="grid gap-6">
+                      {selectedSubsection.verses && selectedSubsection.verses.map((verse, idx) => (
+                        <div key={idx} className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-indigo-500 hover:shadow-md transition-shadow">
+                          <div className="flex justify-between items-center mb-3">
+                            <h3 className="text-lg font-bold text-slate-800 bg-slate-100 px-3 py-1 rounded inline-block">
+                              {verse.ref}
+                            </h3>
+                          </div>
+                          <p className="text-slate-700 leading-relaxed font-serif text-lg whitespace-pre-line">
+                            {verse.text}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* VIEW: SEARCH RESULTS */}
+                {view === 'search' && (
+                  <div className="animate-in fade-in duration-200">
+                    <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-slate-700">
+                      <div className="w-5 h-5 text-indigo-600">
+                        <SearchIcon />
+                      </div>
+                      {totalOccurrences} Match{totalOccurrences !== 1 && 'es'} found
+                    </h2>
+                    
+                    {filteredVerses.length === 0 ? (
+                       <div className="text-center py-20 text-slate-400 bg-white rounded-xl border border-dashed border-slate-200">
+                         <div className="w-12 h-12 mx-auto mb-3 text-slate-200">
+                            <SearchIcon />
+                         </div>
+                         <p className="text-lg font-medium">No verses found</p>
+                         <p className="text-sm">Try searching for a different word or reference</p>
+                       </div>
+                    ) : (
+                      <div className="grid gap-4">
+                        {filteredVerses.map((verse, idx) => (
+                          <div 
+                            key={idx} 
+                            className="bg-white p-5 rounded-lg shadow-sm border border-slate-100 hover:border-indigo-200 transition-colors cursor-pointer"
+                            onClick={() => {
+                               const section = BIBLE_DATA.find(s => s.id === verse.sectionId);
+                               let subsection;
+                               
+                               if (section) {
+                                   subsection = section.subsections?.find(sub => sub.id === verse.subId);
+                                   if (!subsection) {
+                                       section.subsections?.forEach(sub => {
+                                           if (sub.subsections) {
+                                               const found = sub.subsections.find(n => n.id === verse.subId);
+                                               if (found) subsection = found;
+                                           }
+                                       });
+                                   }
+                               }
+
+                               if (section && subsection) {
+                                   handleSectionClick(section);
+                                   setTimeout(() => handleSubsectionClick(subsection), 0);
+                                   setSearchQuery(''); 
+                               }
+                            }}
+                          >
+                            <div className="flex justify-between items-center mb-2">
+                               <span className="text-xs font-bold text-indigo-500 uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded">
+                                 {verse.sectionId}{verse.subId}
+                               </span>
+                               <span className="text-xs text-slate-400 truncate max-w-[150px]">{verse.subTitle}</span>
+                            </div>
+                            <h3 className="text-md font-bold text-slate-800 mb-2">{highlightText(verse.ref, searchQuery)}</h3>
+                            <p className="text-slate-600 text-sm whitespace-pre-line">{highlightText(verse.text, searchQuery)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+              </main>
+            </div>
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
