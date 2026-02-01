@@ -12,21 +12,27 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans antialiased">
+    <!-- Error Container -->
+    <div id="error-container" style="display:none; padding:20px; background:#fee2e2; color:#b91c1c; border-bottom:1px solid #ef4444; font-family:monospace; position: fixed; top: 0; left: 0; width: 100%; z-index: 50;">
+        <strong>App Error:</strong> <span id="error-message"></span>
+    </div>
+
     <div id="root"></div>
 
-    <!-- We add data-type="module" to prevent Babel from treating it as CommonJS -->
-    <script type="text/babel" data-type="module">
-        const { useState, useMemo, useRef, useEffect } = React;
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            document.getElementById('error-container').style.display = 'block';
+            document.getElementById('error-message').textContent = message + " (Line: " + lineno + ")";
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useMemo } = React;
 
         // --- ICONS ---
         const SearchIcon = ({ className }) => (
@@ -45,9 +51,9 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 18 12"/></svg>
         );
 
-        // --- BIBLE DATA ---
-        const BIBLE_DATA = [
-          {
+        // --- BIBLE DATA SPLIT INTO SECTIONS ---
+
+        const SECTION_1 = {
             id: "1",
             title: "THE BIBLE IS THE INFALLIBLE WORD OF GOD",
             subsections: [
@@ -134,8 +140,9 @@
                 ]
               }
             ]
-          },
-          {
+        };
+
+        const SECTION_2 = {
             id: "2",
             title: "ONE GOD: THE MIGHTY GOD IN CHRIST",
             subsections: [
@@ -211,8 +218,9 @@
         ]
       }
     ]
-  },
-  {
+  };
+
+  const SECTION_3 = {
     id: "3",
     title: "SIN AND SALVATION",
     subsections: [
@@ -414,8 +422,9 @@
         ]
       }
     ]
-  },
-  {
+  };
+
+  const SECTION_4 = {
     id: "4",
     title: "CHRISTIAN LIVING",
     subsections: [
@@ -611,164 +620,152 @@
             ]
         }
     ]
-  }
-];
+  };
 
-        // --- HELPER ---
-        const escapeRegExp = (string) => {
-            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        };
+  const BIBLE_DATA = [SECTION_1, SECTION_2, SECTION_3, SECTION_4];
 
-        const highlightText = (text, query) => {
-            if (!query) return text;
-            try {
-                const terms = query.split(',').map(term => term.trim()).filter(term => term.length > 0);
-                if (terms.length === 0) return text;
+// --- HELPER ---
+const escapeRegExp = (string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
 
-                const escapedTerms = terms.map(escapeRegExp).join('|');
-                const regex = new RegExp(`(${escapedTerms})`, 'gi');
-                
-                const parts = text.split(regex);
-                
-                return parts.map((part, index) => {
-                     const isMatch = terms.some(term => part.toLowerCase() === term.toLowerCase());
-                     return isMatch ? 
-                        <span key={index} className="bg-yellow-200 font-semibold text-slate-900 rounded-sm px-0.5">{part}</span> : 
-                        part;
+const highlightText = (text, query) => {
+    if (!query) return text;
+    try {
+        const terms = query.split(',').map(term => term.trim()).filter(term => term.length > 0);
+        if (terms.length === 0) return text;
+
+        const escapedTerms = terms.map(escapeRegExp).join('|');
+        const regex = new RegExp(`(${escapedTerms})`, 'gi');
+        
+        const parts = text.split(regex);
+        
+        return parts.map((part, index) => {
+             const isMatch = terms.some(term => part.toLowerCase() === term.toLowerCase());
+             return isMatch ? 
+                <span key={index} className="bg-yellow-200 font-semibold text-slate-900 rounded-sm px-0.5">{part}</span> : 
+                part;
+        });
+    } catch (e) {
+        console.error(e);
+        return text;
+    }
+};
+
+const countMatchesInString = (text, query) => {
+    if (!query || !text) return 0;
+    try {
+        const terms = query.split(',').map(term => term.trim()).filter(term => term.length > 0);
+        if (terms.length === 0) return 0;
+
+        const escapedTerms = terms.map(escapeRegExp).join('|');
+        const regex = new RegExp(escapedTerms, 'gi');
+        const matches = text.match(regex);
+        return matches ? matches.length : 0;
+    } catch (e) {
+        return 0;
+    }
+};
+
+// --- APP COMPONENT ---
+const App = () => {
+  const [view, setView] = useState('home'); // home, section, subsection, search
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [selectedSubsection, setSelectedSubsection] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredVerses = useMemo(() => {
+    if (!searchQuery) return [];
+    
+    const terms = searchQuery.toLowerCase().split(',').map(t => t.trim()).filter(t => t);
+    const results = [];
+    
+    // Helper function to process verses
+    const processVerses = (verses, sectionId, subId, subTitle) => {
+        verses.forEach(v => {
+            const isMatch = terms.every(term => 
+                v.text.toLowerCase().includes(term) || v.ref.toLowerCase().includes(term)
+            );
+            if (isMatch) {
+                results.push({ ...v, sectionId, subId, subTitle });
+            }
+        });
+    };
+
+    BIBLE_DATA.forEach(section => {
+      // Handle regular subsections
+      if (section.subsections) {
+          section.subsections.forEach(sub => {
+            // Check if subsection has nested subsections (like 4D was previously, though now it's flattened)
+            if (sub.subsections) {
+                sub.subsections.forEach(nestedSub => {
+                    processVerses(nestedSub.verses, section.id, nestedSub.id, nestedSub.title);
                 });
-            } catch (e) {
-                console.error(e);
-                return text;
+            } else if (sub.verses) {
+                processVerses(sub.verses, section.id, sub.id, sub.title);
             }
-        };
+          });
+      }
+    });
+    return results;
+  }, [searchQuery]);
 
-        const countMatchesInString = (text, query) => {
-            if (!query || !text) return 0;
-            try {
-                const terms = query.split(',').map(term => term.trim()).filter(term => term.length > 0);
-                if (terms.length === 0) return 0;
+  const totalOccurrences = useMemo(() => {
+     if (!searchQuery) return 0;
+     return filteredVerses.reduce((acc, verse) => {
+         return acc + 
+                countMatchesInString(verse.text, searchQuery) + 
+                countMatchesInString(verse.ref, searchQuery);
+     }, 0);
+  }, [filteredVerses, searchQuery]);
 
-                const escapedTerms = terms.map(escapeRegExp).join('|');
-                const regex = new RegExp(escapedTerms, 'gi');
-                const matches = text.match(regex);
-                return matches ? matches.length : 0;
-            } catch (e) {
-                return 0;
-            }
-        };
+  const handleSectionClick = (section) => {
+    setSelectedSection(section);
+    setView('section');
+  };
 
-        // --- APP COMPONENT ---
-        const App = () => {
-          const [view, setView] = useState('home'); // home, section, subsection, search
-          const [selectedSection, setSelectedSection] = useState(null);
-          const [selectedSubsection, setSelectedSubsection] = useState(null);
-          const [searchQuery, setSearchQuery] = useState('');
+  const handleSubsectionClick = (subsection) => {
+    if (subsection.subsections) {
+        // Special handling for 4D which acts as a container
+        setSelectedSection(subsection); // Treat 4D as a section for navigation purposes
+        setView('section');
+    } else {
+        setSelectedSubsection(subsection);
+        setView('subsection');
+    }
+  };
 
-          const filteredVerses = useMemo(() => {
-            if (!searchQuery) return [];
-            
-            const terms = searchQuery.toLowerCase().split(',').map(t => t.trim()).filter(t => t);
-            const results = [];
-            
-            // Helper function to process verses
-            const processVerses = (verses, sectionId, subId, subTitle) => {
-                verses.forEach(v => {
-                    const isMatch = terms.every(term => 
-                        v.text.toLowerCase().includes(term) || v.ref.toLowerCase().includes(term)
-                    );
-                    if (isMatch) {
-                        results.push({ ...v, sectionId, subId, subTitle });
-                    }
-                });
-            };
+  const goHome = () => {
+    setView('home');
+    setSelectedSection(null);
+    setSelectedSubsection(null);
+    setSearchQuery('');
+  };
 
-            BIBLE_DATA.forEach(section => {
-              // Handle regular subsections
-              if (section.subsections) {
-                  section.subsections.forEach(sub => {
-                    // Check if subsection has nested subsections (like 4D was previously, though now it's flattened)
-                    if (sub.subsections) {
-                        sub.subsections.forEach(nestedSub => {
-                            processVerses(nestedSub.verses, section.id, nestedSub.id, nestedSub.title);
-                        });
-                    } else if (sub.verses) {
-                        processVerses(sub.verses, section.id, sub.id, sub.title);
-                    }
-                  });
-              }
-            });
-            return results;
-          }, [searchQuery]);
-
-          const totalOccurrences = useMemo(() => {
-             if (!searchQuery) return 0;
-             return filteredVerses.reduce((acc, verse) => {
-                 return acc + 
-                        countMatchesInString(verse.text, searchQuery) + 
-                        countMatchesInString(verse.ref, searchQuery);
-             }, 0);
-          }, [filteredVerses, searchQuery]);
-
-          const handleSectionClick = (section) => {
-            setSelectedSection(section);
-            setView('section');
-          };
-
-          const handleSubsectionClick = (subsection) => {
-            // If it's a nested section like 4D, we might want to just show its children directly or navigate deeper.
-            // For simplicity in this UI structure, if a subsection has its own subsections (like 4D),
-            // we treat it as a 'section' view effectively, or flatter.
-            // Given the data structure for 4D is slightly different (nested), let's flatten it for display if needed.
-            
-            if (subsection.subsections) {
-                // Special handling for 4D which acts as a container
-                setSelectedSection(subsection); // Treat 4D as a section for navigation purposes
-                setView('section');
-            } else {
-                setSelectedSubsection(subsection);
-                setView('subsection');
-            }
-          };
-
-          const goHome = () => {
-            setView('home');
-            setSelectedSection(null);
-            setSelectedSubsection(null);
-            setSearchQuery('');
-          };
-
-          // Helper to render subsections, handling potential nested structure in 4D
-          const renderSubsections = (section) => {
-              // If the section ITSELF has subsections (like 1, 2, 3, 4)
-              let subsToRender = section.subsections || [];
-              
-              // If we clicked on 4D (which is inside 4's subsections list but acts like a parent to 4D1, 4D2...),
-              // we need to handle that. 
-              // Actually, my data structure for 4D above put "subsections" INSIDE the object in the main array.
-              // Let's adjust logic: 
-              // If we are viewing "Section 4", we see 4A, 4B, 4C, 4D.
-              // If we click 4D, we should see 4D1, 4D2, 4D3.
-              
-              return subsToRender.map((sub) => (
-               <div 
-                 key={sub.id}
-                 onClick={() => handleSubsectionClick(sub)}
-                 className="bg-white rounded-lg p-5 shadow-sm border border-slate-100 hover:border-indigo-200 cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]"
-               >
-                 <div className="flex items-center gap-4">
-                    <div className="bg-indigo-50 text-indigo-700 font-bold w-10 h-10 rounded-full flex items-center justify-center shrink-0 border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                      {sub.id}
-                    </div>
-                    <h3 className="font-medium text-slate-700 group-hover:text-indigo-800 transition-colors pr-4">
-                      {sub.title}
-                    </h3>
-                 </div>
-                 <div className="flex items-center gap-3">
-                   <span className="text-xs font-semibold bg-slate-50 text-slate-400 px-2 py-1 rounded hidden sm:inline-block">
-                      {sub.verses ? sub.verses.length : (sub.subsections ? sub.subsections.length + ' topics' : '0')}
-                   </span>
-                   <div className="w-5 h-5 text-slate-300 group-hover:text-indigo-400">
-                       <ChevronRightIcon />
+  // Helper to render subsections
+  const renderSubsections = (section) => {
+      let subsToRender = section.subsections || [];
+      
+      return subsToRender.map((sub) => (
+       <div 
+         key={sub.id}
+         onClick={() => handleSubsectionClick(sub)}
+         className="bg-white rounded-lg p-5 shadow-sm border border-slate-100 hover:border-indigo-200 cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]"
+       >
+         <div className="flex items-center gap-4">
+            <div className="bg-indigo-50 text-indigo-700 font-bold w-10 h-10 rounded-full flex items-center justify-center shrink-0 border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+              {sub.id}
+            </div>
+            <h3 className="font-medium text-slate-700 group-hover:text-indigo-800 transition-colors pr-4">
+              {sub.title}
+            </h3>
+         </div>
+         <div className="flex items-center gap-3">
+           <span className="text-xs font-semibold bg-slate-50 text-slate-400 px-2 py-1 rounded hidden sm:inline-block">
+              {sub.verses ? sub.verses.length : (sub.subsections ? sub.subsections.length + ' topics' : '0')}
+           </span>
+           <div className="w-5 h-5 text-slate-300 group-hover:text-indigo-400">
+               <ChevronRightIcon />
                    </div>
                  </div>
                </div>
@@ -940,6 +937,8 @@
                             key={idx} 
                             className="bg-white p-5 rounded-lg shadow-sm border border-slate-100 hover:border-indigo-200 transition-colors cursor-pointer"
                             onClick={() => {
+                               // Navigation logic needs to find parent section
+                               // We can use the IDs passed in results
                                const section = BIBLE_DATA.find(s => s.id === verse.sectionId);
                                let subsection;
                                
